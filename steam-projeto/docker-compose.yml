@@ -1,0 +1,17 @@
+# Banco vetorial do agente: PostgreSQL 16 já com a extensão pgvector.
+# Subir:   docker compose up -d        Parar:  docker compose down
+# Os dados ficam no volume "pgdata" (não somem quando o container para).
+services:
+  banco:
+    image: pgvector/pgvector:pg16
+    container_name: steam-pgvector
+    environment:
+      POSTGRES_USER: steam
+      POSTGRES_PASSWORD: steam
+      POSTGRES_DB: steam
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata:

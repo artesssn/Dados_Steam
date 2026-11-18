@@ -1,0 +1,83 @@
+================================================================================ 
+PERGUNTA: O que mudou na atualização mais recente do Counter-Strike 2? 
+
+RESPOSTA:
+ Na atualização mais recente do Counter-Strike 2, publicada em 2026-10-28, foram adicionadas algumas funcionalidades importantes:
+
+- Foi adicionada uma opção para alternar o Modo de Recarga Silenciosa entre Hold e Toggle. Com o Toggle ativado, uma vez que a recarga silenciosa comece, é possível soltar o botão de recarga. Para cancelar uma recarga silenciosa e voltar a uma recarga rápida, basta tocar no botão de recarga novamente.
+- Foram corrigidos vários casos onde o primeiro som de uma recarga era audível, independentemente se o usuário solicitou uma recarga silenciosa ou não.
+
+Fonte: [5] 
+
+FONTES:
+[1] Counter-Strike 2: Counter-Strike 2 Update - Steam - anúncios oficiais (Community Announcements) - https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1846651706675829
+[2] Counter-Strike 2: descrição na loja - Steam Store - https://store.steampowered.com/app/730
+[3] Counter-Strike 2: Counter-Strike 2 Update - Steam - anúncios oficiais (Community Announcements) - https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1847286114034398
+[4] Counter-Strike 2: Counter-Strike 2 Update - Steam - anúncios oficiais (Community Announcements) - https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1846018067931597
+[5] Counter-Strike 2: Counter-Strike 2 Update - Steam - anúncios oficiais (Community Announcements) - https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1847920302232686 
+
+================================================================================ 
+PERGUNTA: Jogos gratuitos são mais bem avaliados que os pagos? 
+
+RESPOSTA:
+ De acordo com os dados fornecidos, jogos gratuitos têm uma média de 78.6% de avaliações positivas, contra 86.0% para os jogos pagos. No entanto, a diferença estatisticamente significativa foi encontrada na avaliação dos jogos gratuitos em comparação com os pagos [1]. Portanto, não, jogos gratuitos não são mais bem avaliados que os pagos, na verdade, os jogos pagos têm avaliações positivas mais altas em média. 
+
+FONTES:
+[1] Análise do grupo (estatística): Jogos gratuitos versus pagos: avaliação e popularidade - Projeto do grupo - docs/achados_eda.txt
+[2] Análise do grupo (estatística): Preço dos jogos pagos - Projeto do grupo - docs/achados_eda.txt
+[3] Análise do grupo (estatística): Gêneros mais e menos bem avaliados - Projeto do grupo - docs/achados_eda.txt
+[4] Análise do grupo (estatística): Avaliação por faixa de preço - Projeto do grupo - docs/achados_eda.txt
+[5] Análise do grupo (estatística): Avaliação média dos jogos - Projeto do grupo - docs/achados_eda.txt 
+
+================================================================================ 
+PERGUNTA: Quais gêneros têm a melhor avaliação dos jogadores? 
+
+RESPOSTA:
+ Gêneros com melhor avaliação média:
+- Indie (88.2%, 353 jogos)
+- Casual (86.1%, 120 jogos)
+- Simulation (85.8%, 192 jogos)
+- Strategy (85.3%, 192 jogos)
+- Adventure (85.2%, 372 jogos) [1] 
+
+FONTES:
+[1] Análise do grupo (estatística): Gêneros mais e menos bem avaliados - Projeto do grupo - docs/achados_eda.txt
+[2] Análise do grupo (estatística): Jogos mais avaliados da base - Projeto do grupo - docs/achados_eda.txt
+[3] Análise do grupo (estatística): Avaliação média dos jogos - Projeto do grupo - docs/achados_eda.txt
+[4] Análise do grupo (estatística): Jogos gratuitos versus pagos: avaliação e popularidade - Projeto do grupo - docs/achados_eda.txt
+[5] Análise do grupo (estatística): Correlação das variáveis com a avaliação - Projeto do grupo - docs/achados_eda.txt 
+
+================================================================================ 
+PERGUNTA: Quais novidades o Valheim anunciou recentemente? 
+
+RESPOSTA:
+ Recentemente, o Valheim anunciou algumas novidades, incluindo:
+
+- Um patch 1.0.21 com uma longa lista de ajustes e correções de bugs [1].
+- Uma concert tour planejada para Stockholm e Paris no próximo ano, com ingressos e mais cidades a serem anunciados [2][3].
+- Uma série de concertos de comemoração do jogo, além de uma concert tour [3].
+- Uma entrada no mundo dos quadrinhos, com um incrível time de desenvolvedores trabalhando nisso [3].
+- A disponibilização de itens de merchandising como uma camiseta limitada, um cobertor de Valkyrie, réplicas de escudos e velas perfumadas [2][3].
+
+Ainda não há informações sobre novos conteúdos de jogo específicos além dessas novidades. 
+
+FONTES:
+[1] Valheim: Patch 1.0.21 - Steam - anúncios oficiais (Community Announcements) - https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1847920302230913
+[2] Valheim: Word from the Devs: What a Month! - Steam - anúncios oficiais (Community Announcements) - https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1845383656377310
+[3] Valheim: Word from the Devs: What a Month! - Steam - anúncios oficiais (Community Announcements) - https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1845383656377310
+[4] Valheim: Word from the Devs: What a Month! - Steam - anúncios oficiais (Community Announcements) - https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1845383656377310
+[5] Valheim: descrição na loja - Steam Store - https://store.steampowered.com/app/892970 
+
+================================================================================ 
+PERGUNTA: Qual variável mais pesou no modelo que prevê se um jogo será bem avaliado? 
+
+RESPOSTA:
+ A variável que mais pesou no modelo que prevê se um jogo será bem avaliado foi o preço, com 0.17 de importância [1]. 
+
+FONTES:
+[1] Análise do grupo (Machine Learning): Variáveis mais importantes do modelo (o que mais pesou) - Projeto do grupo - docs/achados_ml.txt
+[2] Análise do grupo (Machine Learning): Objetivo do modelo de Machine Learning - Projeto do grupo - docs/achados_ml.txt
+[3] Análise do grupo (estatística): Avaliação média dos jogos - Projeto do grupo - docs/achados_eda.txt
+[4] Análise do grupo (estatística): Gêneros mais e menos bem avaliados - Projeto do grupo - docs/achados_eda.txt
+[5] Análise do grupo (estatística): Avaliação por faixa de preço - Projeto do grupo - docs/achados_eda.txt 
+

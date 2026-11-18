@@ -1,0 +1,108 @@
+================================================================================ 
+PERGUNTA: O que mudou na atualização mais recente do Counter-Strike 2? 
+
+RESPOSTA:
+ (Modo só busca: configure GROQ_API_KEY, GEMINI_API_KEY ou OLLAMA no .env para o agente redigir a resposta.) Trechos mais relevantes:
+[1] Counter-Strike 2: Counter-Strike 2 Update: [ UI ] Demo/Replay viewer improvements: 
+- Added a progress bar for demo/replay downloads 
+- Camera controls now use click-and-drag scheme 
+- Free and chase camera are usable during a paused demo 
+- Fixed some minor issues when seeking to a different...
+[2] Counter-Strike 2: descrição na loja: For over two decades, Counter-Strike has offered an elite competitive experience, one shaped by millions of players from across the globe. And now the next chapter in the CS story is about to begin. This is Counter-Strike 2.
+ For over two decades, Co...
+[3] Counter-Strike 2: Counter-Strike 2 Update: [ MAP SCRIPTING ] 
+- Added Instance.Precache 
+- Returns a CSPrecache object 
+- Added CSPrecache.IsServerLoading 
+- Added CSPrecache.IsServerLoaded 
+- Added CSPrecache.IsClientLoading 
+- Added CSPrecache.IsClientLoaded 
+- Added CSPrecache.IsLoadedForA...
+[4] Counter-Strike 2: Counter-Strike 2 Update: [ MISC ] 
+- Added a ping icon for dropped defuse kits 
+- Reduced the time for AUG reload by half second 
+- Fixed the sound event during silent reload for Desert Eagle 
+- Fixed a case of buzzing soundscape sounds during demo playback 
+- Clipping fixes...
+[5] Counter-Strike 2: Counter-Strike 2 Update: [ GAMEPLAY ] 
+- Added an option to switch Silent Reload Mode between Hold and Toggle. With toggle enabled, once the silent reload starts you can let go of the reload button. To cancel a silent reload and go back to a fast reload, you can tap the relo... 
+
+FONTES:
+[1] Counter-Strike 2: Counter-Strike 2 Update - Steam - anúncios oficiais (Community Announcements) - https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1846651706675829
+[2] Counter-Strike 2: descrição na loja - Steam Store - https://store.steampowered.com/app/730
+[3] Counter-Strike 2: Counter-Strike 2 Update - Steam - anúncios oficiais (Community Announcements) - https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1847286114034398
+[4] Counter-Strike 2: Counter-Strike 2 Update - Steam - anúncios oficiais (Community Announcements) - https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1846018067931597
+[5] Counter-Strike 2: Counter-Strike 2 Update - Steam - anúncios oficiais (Community Announcements) - https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1847920302232686 
+
+================================================================================ 
+PERGUNTA: Jogos gratuitos são mais bem avaliados que os pagos? 
+
+RESPOSTA:
+ (Modo só busca: configure GROQ_API_KEY, GEMINI_API_KEY ou OLLAMA no .env para o agente redigir a resposta.) Trechos mais relevantes:
+[1] Análise do grupo (estatística): Jogos gratuitos versus pagos: avaliação e popularidade: Jogos gratuitos têm em média 78.6% de avaliações positivas, contra 86.0% dos jogos pagos. Teste de Mann-Whitney: p < 0,001, a diferença é estatisticamente significativa. Em popularidade, a mediana de jogadores simultâneos é 496 nos gratuitos e 381 no...
+[2] Análise do grupo (estatística): Preço dos jogos pagos: O preço médio dos jogos pagos é R$ 75.95 e a mediana é R$ 57.99; o mais caro custa R$ 329.90....
+[3] Análise do grupo (estatística): Gêneros mais e menos bem avaliados: Gêneros com melhor avaliação média (com 15 ou mais jogos): Indie (88.2%, 353 jogos); Casual (86.1%, 120 jogos); Simulation (85.8%, 192 jogos); Strategy (85.3%, 192 jogos); Adventure (85.2%, 372 jogos). Gêneros com pior avaliação média: Free To Play (...
+[4] Análise do grupo (estatística): Avaliação por faixa de preço: Avaliação média por faixa de preço: Grátis: 78.6% (149 jogos); Até R$30: 87.4% (197 jogos); R$30-80: 89.4% (270 jogos); R$80-150: 86.5% (161 jogos); Acima de R$150: 83.9% (97 jogos)....
+[5] Análise do grupo (estatística): Avaliação média dos jogos: Em média, 84.9% das avaliações de um jogo são positivas (mediana 88.4%, desvio padrão 11.9%). A distribuição é concentrada nos valores altos: a maioria dos jogos é bem avaliada.... 
+
+FONTES:
+[1] Análise do grupo (estatística): Jogos gratuitos versus pagos: avaliação e popularidade - Projeto do grupo - docs/achados_eda.txt
+[2] Análise do grupo (estatística): Preço dos jogos pagos - Projeto do grupo - docs/achados_eda.txt
+[3] Análise do grupo (estatística): Gêneros mais e menos bem avaliados - Projeto do grupo - docs/achados_eda.txt
+[4] Análise do grupo (estatística): Avaliação por faixa de preço - Projeto do grupo - docs/achados_eda.txt
+[5] Análise do grupo (estatística): Avaliação média dos jogos - Projeto do grupo - docs/achados_eda.txt 
+
+================================================================================ 
+PERGUNTA: Quais gêneros têm a melhor avaliação dos jogadores? 
+
+RESPOSTA:
+ (Modo só busca: configure GROQ_API_KEY, GEMINI_API_KEY ou OLLAMA no .env para o agente redigir a resposta.) Trechos mais relevantes:
+[1] Análise do grupo (estatística): Gêneros mais e menos bem avaliados: Gêneros com melhor avaliação média (com 15 ou mais jogos): Indie (88.2%, 353 jogos); Casual (86.1%, 120 jogos); Simulation (85.8%, 192 jogos); Strategy (85.3%, 192 jogos); Adventure (85.2%, 372 jogos). Gêneros com pior avaliação média: Free To Play (...
+[2] Análise do grupo (estatística): Jogos mais avaliados da base: Os jogos mais avaliados da base são: Counter-Strike 2 (8,815,087 avaliações, 87% positivas), PUBG: BATTLEGROUNDS (2,557,944 avaliações, 59% positivas), Grand Theft Auto V Legacy (1,990,556 avaliações, 87% positivas), Terraria (1,409,473 avaliações, 9...
+[3] Análise do grupo (estatística): Avaliação média dos jogos: Em média, 84.9% das avaliações de um jogo são positivas (mediana 88.4%, desvio padrão 11.9%). A distribuição é concentrada nos valores altos: a maioria dos jogos é bem avaliada....
+[4] Análise do grupo (estatística): Jogos gratuitos versus pagos: avaliação e popularidade: Jogos gratuitos têm em média 78.6% de avaliações positivas, contra 86.0% dos jogos pagos. Teste de Mann-Whitney: p < 0,001, a diferença é estatisticamente significativa. Em popularidade, a mediana de jogadores simultâneos é 496 nos gratuitos e 381 no...
+[5] Análise do grupo (estatística): Correlação das variáveis com a avaliação: Correlação de Spearman com a % de avaliações positivas: ano_lancamento -0.10; n_conquistas +0.01; desconto_pct +0.03; n_idiomas +0.07; preco_brl +0.10; jogadores_simultaneos +0.20; total_avaliacoes +0.31; metacritic +0.45. Valores perto de 0 indicam ... 
+
+FONTES:
+[1] Análise do grupo (estatística): Gêneros mais e menos bem avaliados - Projeto do grupo - docs/achados_eda.txt
+[2] Análise do grupo (estatística): Jogos mais avaliados da base - Projeto do grupo - docs/achados_eda.txt
+[3] Análise do grupo (estatística): Avaliação média dos jogos - Projeto do grupo - docs/achados_eda.txt
+[4] Análise do grupo (estatística): Jogos gratuitos versus pagos: avaliação e popularidade - Projeto do grupo - docs/achados_eda.txt
+[5] Análise do grupo (estatística): Correlação das variáveis com a avaliação - Projeto do grupo - docs/achados_eda.txt 
+
+================================================================================ 
+PERGUNTA: Quais novidades o Valheim anunciou recentemente? 
+
+RESPOSTA:
+ (Modo só busca: configure GROQ_API_KEY, GEMINI_API_KEY ou OLLAMA no .env para o agente redigir a resposta.) Trechos mais relevantes:
+[1] Valheim: Patch 1.0.21: A long list of tweaks and bug fixes incoming today! It touches on a little bit of everything, and we hope this patch will serve to give you all a smoother experience adventuring in Valheim. Due to some internal restrictions, the patch will require a ...
+[2] Valheim: Word from the Devs: What a Month!: Greetings Vikings! We can’t believe it’s only been a scant few weeks since we released 1.0. We’re so happy to see so many new and returning players alike, and we’re grateful for all the love you’ve shown us so far. Without you, we wouldn’t be here, s...
+[3] Valheim: Word from the Devs: What a Month!: with Cantrip Candles , with the Meadows, Mistlands and Deep North joining the roster. Finally, we have announced a limited edition hoodie together with Makeship , perfect as the weather is getting colder. We’ve also teased that Valheim is getting its...
+[4] Valheim: Word from the Devs: What a Month!: want to once again share the fantastic song and music video from Miracle of Sound – because Valheim really is about the stories that you have to tell, and about taking your fate into your own hands. Skål! /The Iron Gate team If you’d like to discuss ...
+[5] Valheim: descrição na loja: A collaborative exploration and survival game for 1-10 players, set in a procedurally generated afterlife inspired by Viking culture. Battle, build, and conquer your way to a saga worthy of Odin’s patronage! Valheim is a collaborative exploration and... 
+
+FONTES:
+[1] Valheim: Patch 1.0.21 - Steam - anúncios oficiais (Community Announcements) - https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1847920302230913
+[2] Valheim: Word from the Devs: What a Month! - Steam - anúncios oficiais (Community Announcements) - https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1845383656377310
+[3] Valheim: Word from the Devs: What a Month! - Steam - anúncios oficiais (Community Announcements) - https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1845383656377310
+[4] Valheim: Word from the Devs: What a Month! - Steam - anúncios oficiais (Community Announcements) - https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1845383656377310
+[5] Valheim: descrição na loja - Steam Store - https://store.steampowered.com/app/892970 
+
+================================================================================ 
+PERGUNTA: Qual variável mais pesou no modelo que prevê se um jogo será bem avaliado? 
+
+RESPOSTA:
+ (Modo só busca: configure GROQ_API_KEY, GEMINI_API_KEY ou OLLAMA no .env para o agente redigir a resposta.) Trechos mais relevantes:
+[1] Análise do grupo (Machine Learning): Variáveis mais importantes do modelo (o que mais pesou): No modelo que prevê se um jogo será bem avaliado, as variáveis que mais pesaram (importância no Random Forest) foram: preço (0.17), número de conquistas (0.10), ano de lançamento (0.10), número de idiomas (0.09), número de DLCs (0.07). Importância al...
+[2] Análise do grupo (Machine Learning): Objetivo do modelo de Machine Learning: O modelo de Machine Learning tenta prever se um jogo terá 80% ou mais de avaliações positivas, usando só características do jogo (preço, gêneros, plataformas, idiomas, conquistas, DLCs). 77% dos jogos da base estão nessa classe....
+[3] Análise do grupo (estatística): Avaliação média dos jogos: Em média, 84.9% das avaliações de um jogo são positivas (mediana 88.4%, desvio padrão 11.9%). A distribuição é concentrada nos valores altos: a maioria dos jogos é bem avaliada....
+[4] Análise do grupo (estatística): Gêneros mais e menos bem avaliados: Gêneros com melhor avaliação média (com 15 ou mais jogos): Indie (88.2%, 353 jogos); Casual (86.1%, 120 jogos); Simulation (85.8%, 192 jogos); Strategy (85.3%, 192 jogos); Adventure (85.2%, 372 jogos). Gêneros com pior avaliação média: Free To Play (...
+[5] Análise do grupo (estatística): Avaliação por faixa de preço: Avaliação média por faixa de preço: Grátis: 78.6% (149 jogos); Até R$30: 87.4% (197 jogos); R$30-80: 89.4% (270 jogos); R$80-150: 86.5% (161 jogos); Acima de R$150: 83.9% (97 jogos).... 
+
+FONTES:
+[1] Análise do grupo (Machine Learning): Variáveis mais importantes do modelo (o que mais pesou) - Projeto do grupo - docs/achados_ml.txt
+[2] Análise do grupo (Machine Learning): Objetivo do modelo de Machine Learning - Projeto do grupo - docs/achados_ml.txt
+[3] Análise do grupo (estatística): Avaliação média dos jogos - Projeto do grupo - docs/achados_eda.txt
+[4] Análise do grupo (estatística): Gêneros mais e menos bem avaliados - Projeto do grupo - docs/achados_eda.txt
+[5] Análise do grupo (estatística): Avaliação por faixa de preço - Projeto do grupo - docs/achados_eda.txt 
+

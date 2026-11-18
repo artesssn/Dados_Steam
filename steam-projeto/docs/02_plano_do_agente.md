@@ -17,12 +17,12 @@ A tabela 9.1 (documento, fonte, link, data de acesso, tema) é gerada automatica
 2. **Limpar:** remover HTML, BBCode (`[img]`, `[url]`, `[list]`), links e entidades (`&quot;`). Descartar textos com menos de 30 palavras.
 3. **Dividir:** chunks de 300 palavras com 50 de sobreposição, para não cortar uma ideia no meio.
 4. **Registrar metadados** em cada chunk: título, fonte, link, data, tema e jogo.
-5. **Organizar:** todos os chunks em uma coleção do ChromaDB chamada `steam`.
+5. **Organizar:** todos os chunks na tabela `documentos` do PostgreSQL, uma linha por chunk.
 
 ## Embeddings e banco vetorial
 - Modelo: `paraphrase-multilingual-MiniLM-L12-v2` (sentence-transformers). É gratuito, roda no computador e entende português e inglês, o que importa porque os patch notes estão em inglês e as perguntas em português.
 - O título entra junto com o texto na hora de gerar o embedding, para a busca achar o jogo certo.
-- Banco: ChromaDB persistente (pasta `data/chroma`), distância cosseno.
+- Banco: PostgreSQL 16 com a extensão **pgvector**. O embedding fica numa coluna `VECTOR(384)`, com índice HNSW e distância cosseno (operador `<=>`).
 
 ## Funcionamento (RAG)
 1. A pergunta vira embedding com o mesmo modelo.
@@ -31,7 +31,7 @@ A tabela 9.1 (documento, fonte, link, data de acesso, tema) é gerada automatica
 4. Os trechos vão para o LLM com a instrução de responder **só** com base neles e citar [1], [2]...
 5. A resposta é mostrada com a lista de fontes (título, fonte, link).
 
-LLM: Groq ou Gemini (planos gratuitos) ou Ollama local. Sem LLM configurado, o agente mostra só os trechos encontrados.
+LLM: Qwen2.5-7B rodando localmente (Ollama). O agente usa somente a base interna do projeto: nenhuma pergunta vai para a internet. Sem LLM configurado, o agente mostra só os trechos encontrados.
 
 ## Como vamos avaliar
 - 5 perguntas fixas para a apresentação (em `src/agente_rag.py --teste`), misturando perguntas sobre patch notes e sobre a análise.

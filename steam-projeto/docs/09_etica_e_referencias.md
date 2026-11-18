@@ -16,6 +16,6 @@
 - PEDREGOSA, F. et al. Scikit-learn: Machine Learning in Python. *Journal of Machine Learning Research*, v. 12, p. 2825-2830, 2011.
 - REIMERS, N.; GUREVYCH, I. Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks. In: *EMNLP*, 2019.
 - LEWIS, P. et al. Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks. In: *NeurIPS*, 2020.
-- CHROMA. *Chroma documentation*. Disponível em: https://docs.trychroma.com. Acesso em: [data].
+- PGVECTOR. *pgvector: open-source vector similarity search for Postgres*. Disponível em: https://github.com/pgvector/pgvector. Acesso em: [data].
 - STREAMLIT. *Streamlit documentation*. Disponível em: https://docs.streamlit.io. Acesso em: [data].
 - MCKINNEY, W. Data Structures for Statistical Computing in Python. In: *Proceedings of the 9th Python in Science Conference*, 2010.

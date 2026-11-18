@@ -33,7 +33,12 @@ Na primeira instalação, crie o ambiente virtual e instale as dependências:
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
+cp .env.example .env
+docker compose up -d        # banco vetorial: PostgreSQL + pgvector
+python src/vetorial.py      # grava os textos e embeddings no banco
 ```
+
+O painel analítico funciona sem o banco. A aba **Agente de dados** precisa do PostgreSQL ligado (`docker compose up -d`).
 
 ## 3. Mapa de navegação
 
@@ -158,7 +163,7 @@ Selecione **Agente de dados** na navegação superior.
 3. A resposta aparece abaixo do campo, acompanhada de referências numeradas quando há um modelo de linguagem configurado.
 4. Expanda **Fontes e trechos usados** para conferir os textos que embasaram a resposta.
 
-Sem configurar um LLM, o agente funciona em modo de busca e apresenta os trechos encontrados. Para gerar respostas redigidas, configure uma das opções documentadas no arquivo `.env.example` (Groq, Gemini, Ollama ou um modelo GGUF local). O banco vetorial precisa existir em `data/chroma`.
+Sem configurar um LLM, o agente funciona em modo de busca e apresenta os trechos encontrados. Para gerar respostas redigidas, configure um modelo local no `.env` (Ollama com `qwen2.5:7b` ou um arquivo GGUF). O agente consulta somente a base interna do projeto: nenhuma pergunta é enviada para a internet. O banco vetorial (PostgreSQL + pgvector) precisa estar ligado e preenchido por `python src/vetorial.py`.
 
 ## 8. Etapas de dados e arquivos importantes
 
@@ -170,7 +175,7 @@ Sem configurar um LLM, o agente funciona em modo de busca e apresenta os trechos
 | Dicionário | `src/dicionario.py` | Gera a documentação das variáveis da base. |
 | Análise exploratória | `src/eda.py` | Gera estatísticas, gráficos e resultados da análise. |
 | Machine Learning | `src/ml.py` | Compara modelos de classificação e calcula perfis de jogos. |
-| Banco textual | `src/vetorial.py` | Prepara documentos e cria o banco pesquisável em `data/chroma/`. |
+| Banco textual | `src/vetorial.py`, `src/banco.py`, `docker-compose.yml` | Prepara os documentos e grava textos e embeddings na tabela `documentos` do PostgreSQL com pgvector. |
 | Aplicação web | `app/painel.py` | Implementa as telas descritas neste guia. |
 | Resposta do agente | `src/agente_rag.py` | Busca trechos e, se configurado, redige respostas com um LLM. |
 

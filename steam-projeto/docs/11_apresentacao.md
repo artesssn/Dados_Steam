@@ -44,7 +44,7 @@ Regra do enunciado: **todos os integrantes falam**. Cada parte tem um responsáv
 4. Quais novidades o Valheim anunciou recentemente?
 5. Qual variável mais pesou no modelo que prevê se um jogo será bem avaliado?
 
-Em cada uma, abrir "Fontes e trechos usados" para mostrar de onde veio a resposta. Explicar em uma frase: "a pergunta vira um vetor, buscamos os trechos mais parecidos no ChromaDB e o modelo de linguagem responde só com base neles."
+Em cada uma, abrir "Fontes e trechos usados" para mostrar de onde veio a resposta. Explicar em uma frase: "a pergunta vira um vetor, buscamos os trechos mais parecidos no PostgreSQL com pgvector e o modelo de linguagem responde só com base neles."
 
 **7. Conclusão (Integrante 1):** ler as conclusões e as 2 recomendações da seção 12 do relatório.
 

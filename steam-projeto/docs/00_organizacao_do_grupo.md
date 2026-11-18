@@ -7,7 +7,7 @@
 | Tratamento e dicionário | [Integrante 2] | Limpeza, variáveis derivadas, dicionário de dados | src/tratamento.py, src/dicionario.py |
 | Estatística e ML | [Integrante 3] | Análise exploratória, testes, modelos | src/eda.py, src/ml.py |
 | Painel | [Integrante 4] | Streamlit, filtros, gráficos, prints para o relatório | app/painel.py |
-| Agente RAG | [Integrante 5] | Textos, embeddings, ChromaDB, agente, 5 perguntas | src/vetorial.py, src/agente_rag.py |
+| Agente RAG | [Integrante 5] | Textos, embeddings, PostgreSQL/pgvector, agente, 5 perguntas | src/vetorial.py, src/agente_rag.py |
 | Relatório e apresentação | todos (um revisor final) | Cada um escreve a parte do relatório da sua função | docs/relatorio_final.md |
 
 Se o grupo tiver menos gente, junte: Dados+Tratamento, Estatística+ML, Painel+Agente.

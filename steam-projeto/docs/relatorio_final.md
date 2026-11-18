@@ -44,7 +44,7 @@ O projeto seguiu um pipeline em Python, com um script para cada etapa, executado
 | Dicionário | `src/dicionario.py` | documentação das colunas |
 | Análise | `src/eda.py` | estatística descritiva, testes, correlação, gráficos |
 | Machine Learning | `src/ml.py` | classificação e clusterização |
-| Banco vetorial | `src/vetorial.py` | limpeza dos textos, chunks, embeddings, ChromaDB |
+| Banco vetorial | `src/vetorial.py` | limpeza dos textos, chunks, embeddings, PostgreSQL + pgvector |
 | Agente | `src/agente_rag.py` | busca híbrida + LLM |
 | Painel | `app/painel.py` | Streamlit com filtros, gráficos e aba do agente |
 
@@ -53,8 +53,8 @@ O projeto seguiu um pipeline em Python, com um script para cada etapa, executado
 - **Tratamentos:** descritos na seção 6.
 - **Técnicas estatísticas:** média, mediana, mínimo, máximo, desvio padrão, assimetria, teste de Mann-Whitney e correlação de Spearman. Usamos testes não paramétricos porque a proporção de avaliações positivas não segue distribuição normal (assimetria de −1,53).
 - **Painel:** Streamlit com Plotly.
-- **Agente:** embeddings `paraphrase-multilingual-MiniLM-L12-v2`, banco vetorial ChromaDB e LLM gratuito (Groq, Gemini ou Ollama).
-- **Ferramentas:** Python 3, pandas, NumPy, SciPy, Matplotlib, Seaborn, scikit-learn, Plotly, Streamlit, sentence-transformers, ChromaDB e GitHub.
+- **Agente:** embeddings `paraphrase-multilingual-MiniLM-L12-v2`, banco vetorial PostgreSQL com pgvector e LLM local Qwen2.5-7B (Ollama), sem API externa.
+- **Ferramentas:** Python 3, pandas, NumPy, SciPy, Matplotlib, Seaborn, scikit-learn, Plotly, Streamlit, sentence-transformers, PostgreSQL, pgvector, Docker, Ollama e GitHub.
 
 ## 5. Descrição da base de dados
 - **Recorte:** os 1000 jogos com mais donos estimados segundo o SteamSpy (página 0 do endpoint `all`). Para cada um, buscamos os detalhes na Store API com preços da loja brasileira (`cc=br`).
@@ -152,22 +152,25 @@ A única correlação moderada é com a nota da crítica: crítica e jogadores t
 
 ## 9. Painel analítico
 Feito em Streamlit (`app/painel.py`). Para abrir: `streamlit run app/painel.py`.
-- **Indicadores:** número de jogos, % de positivas média, preço médio dos pagos, % de gratuitos e total de avaliações.
-- **Filtros:** ano de lançamento, gêneros, tipo (pago/grátis) e preço máximo. Todos os gráficos e indicadores respondem aos filtros.
-- **Gráficos:**
-  - distribuição da avaliação;
-  - avaliação por faixa de preço;
-  - avaliação por gênero;
-  - grátis × pago (boxplot);
-  - preço × avaliação (dispersão com tamanho pelo número de avaliações);
-  - avaliação por ano.
-- **Tabela:** top 25 jogos, ordenável por avaliação, popularidade ou preço.
-- **Conclusões visuais:** os principais achados em texto, ao final da página.
+O passo a passo de cada tela está em `docs/guia_do_sistema.md`.
+- **Filtros (barra lateral), em três grupos:**
+  - lançamento e catálogo: ano, gêneros, desenvolvedora, modelo de preço (grátis/pago), faixa de preço no Brasil e jogos sem preço;
+  - avaliações e popularidade: % de positivas, mínimo de avaliações e nota Metacritic;
+  - características: plataformas exigidas, multiplayer, acesso antecipado e número de idiomas.
+
+  Todos os indicadores e gráficos respondem aos filtros.
+- **Indicadores:** jogos no recorte, % de positivas média, preço mediano dos pagos, % de gratuitos e total de avaliações. Também mostra a mediana de jogadores simultâneos, o Metacritic médio, a mediana de idiomas e uma comparação automática entre jogos grátis e pagos.
+- **Gráficos, em três abas:**
+  - **Composição (pizza):** distribuição por faixa de preço, gênero, perfil de avaliação, modelo de preço, multiplayer ou plataforma;
+  - **Comparações (colunas):** quantidade, avaliação média, jogadores simultâneos ou preço mediano por grupo, com mínimo de jogos por grupo;
+  - **Evolução (linhas):** o indicador escolhido ao longo dos anos de lançamento.
+- **Tabela:** todos os jogos do recorte, ordenáveis por avaliações, jogadores, preço, Metacritic ou ano.
+- **Conclusões gerais:** os achados da análise em texto.
 - **Aba "Agente de dados":** o agente RAG dentro do mesmo painel.
 
 ![Visão geral do painel](prints/01_visao_geral.png)
 
-![Gráficos do painel](prints/02_graficos.png)
+![Aba Comparações](prints/02_graficos.png)
 
 ![Aba do agente de dados](prints/03_agente.png)
 
@@ -195,14 +198,30 @@ Exemplos para o corpo do relatório:
 4. Divisão em chunks de 300 palavras com sobreposição de 50, resultando em 2.724 chunks.
 5. Metadados em cada chunk: título, fonte, link, data, tema e jogo.
 
-**Embeddings e banco vetorial.** Usamos o modelo `paraphrase-multilingual-MiniLM-L12-v2`, que é gratuito, roda localmente e entende português e inglês. Isso importa porque as perguntas são em português e os patch notes em inglês. O título é concatenado ao texto antes de gerar o embedding. Os chunks ficam no ChromaDB persistente (coleção `steam`, distância cosseno).
+**Embeddings e banco vetorial.** Usamos o modelo `paraphrase-multilingual-MiniLM-L12-v2`, que é gratuito, roda localmente e entende português e inglês. Isso importa porque as perguntas são em português e os patch notes em inglês. O título é concatenado ao texto antes de gerar o embedding. Os chunks ficam no PostgreSQL 16 com a extensão **pgvector**, que roda num container Docker (`docker-compose.yml`). Cada chunk é uma linha da tabela `documentos`:
+
+| Coluna | Tipo | Conteúdo |
+|---|---|---|
+| id | TEXT | identificador do chunk |
+| titulo, fonte, link, data, tema, jogo | TEXT | metadados |
+| texto | TEXT | o trecho |
+| embedding | VECTOR(384) | o vetor gerado pelo modelo |
+
+Há um índice HNSW na coluna `embedding` (distância cosseno) e um índice comum em `jogo`. Com isso, a busca leva cerca de 3 ms. A troca do ChromaDB, usado no início, pelo pgvector foi feita a pedido do professor. Conferimos que as 5 perguntas de teste recuperam exatamente as mesmas fontes nos dois bancos.
 
 **Funcionamento.**
 1. A pergunta vira embedding.
 2. Se ela cita um jogo da base, a busca é filtrada pelos textos daquele jogo.
-3. O ChromaDB devolve 20 candidatos.
+3. O PostgreSQL devolve os 20 trechos mais próximos com uma consulta SQL:
+   ```sql
+   SELECT titulo, fonte, link, data, texto, embedding <=> :pergunta AS distancia
+   FROM documentos
+   WHERE :jogo IS NULL OR jogo = :jogo
+   ORDER BY distancia
+   LIMIT 20;
+   ```
 4. Uma reordenação híbrida soma à similaridade um bônus pelas palavras da pergunta presentes no trecho. Sem essa etapa, a pergunta sobre "a variável que mais pesou no modelo" recuperava o achado errado.
-5. Os 5 melhores trechos vão para o LLM (local com Ollama/Qwen2.5-7B, ou Groq/Gemini pela internet), instruído a responder em português, só com base nos trechos, citando [1], [2]... e dizendo quando não encontrar a resposta.
+5. Os 5 melhores trechos vão para o LLM local (Qwen2.5-7B, via Ollama), instruído a responder em português, só com base nos trechos, citando [1], [2]... e dizendo quando não encontrar a resposta.
 
 **Perguntas de teste** (resultado completo da busca em `docs/teste_agente_modo_busca.txt`):
 
@@ -214,7 +233,7 @@ Exemplos para o corpo do relatório:
 | 4 | Quais novidades o Valheim anunciou recentemente? | Patch 1.0.21 do Valheim | sim |
 | 5 | Qual variável mais pesou no modelo que prevê se um jogo será bem avaliado? | achado "variáveis mais importantes" | sim |
 
-**Respostas redigidas pelo agente** (modelo local Qwen2.5-7B, sem internet nem chave de API; saída completa em `docs/teste_agente_respostas.txt`):
+**Respostas redigidas pelo agente** (busca no PostgreSQL/pgvector + modelo local Qwen2.5-7B, sem internet nem chave de API; saída completa em `docs/teste_agente_respostas.txt`):
 
 **1. O que mudou na atualização mais recente do Counter-Strike 2?**
 > Na atualização publicada em 28/10/2026 foi adicionada uma opção para alternar o Modo de Recarga Silenciosa entre *Hold* e *Toggle*; com o Toggle, depois que a recarga silenciosa começa, é possível soltar o botão. Também foram corrigidos casos em que o primeiro som da recarga era audível mesmo na recarga silenciosa. [5]
@@ -270,7 +289,7 @@ Respondendo à pergunta principal: as características mais associadas a uma boa
 - REIMERS, N.; GUREVYCH, I. Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks. In: *Proceedings of EMNLP-IJCNLP*, 2019.
 - LEWIS, P. et al. Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks. In: *Advances in Neural Information Processing Systems (NeurIPS)*, 2020.
 - MCKINNEY, W. Data Structures for Statistical Computing in Python. In: *Proceedings of the 9th Python in Science Conference*, 2010.
-- CHROMA. *Chroma Documentation*. Disponível em: https://docs.trychroma.com. Acesso em: 03 nov. 2026.
+- PGVECTOR. *pgvector: open-source vector similarity search for Postgres*. Disponível em: https://github.com/pgvector/pgvector. Acesso em: 18 nov. 2026.
 - STREAMLIT. *Streamlit Documentation*. Disponível em: https://docs.streamlit.io. Acesso em: 03 nov. 2026.
 
 **Divisão de tarefas:** [preencher conforme `docs/00_organizacao_do_grupo.md`]

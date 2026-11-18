@@ -54,6 +54,6 @@ Recorte: os cerca de 1000 jogos com mais donos segundo o SteamSpy, mantendo só 
 | Machine Learning | scikit-learn (Regressão Logística, Random Forest, K-Means) |
 | Painel | Streamlit |
 | Embeddings | sentence-transformers (paraphrase-multilingual-MiniLM-L12-v2) |
-| Banco vetorial | ChromaDB |
-| LLM do agente | Groq / Gemini (planos gratuitos) ou Ollama local |
+| Banco vetorial | PostgreSQL com a extensão pgvector |
+| LLM do agente | Qwen2.5-7B local via Ollama (sem API externa) |
 | Versionamento | GitHub |

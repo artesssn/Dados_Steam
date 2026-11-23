@@ -13,7 +13,7 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-      # banco já pronto: na 1ª vez que o container é criado, carrega os 2.724 trechos com os vetores
+      # banco já pronto: na 1ª vez que o container é criado, carrega os 3.726 trechos com os vetores
       # (não precisa rodar o vetorial.py). Para recarregar do zero: docker compose down -v
       - ./banco_pronto:/docker-entrypoint-initdb.d:ro
 volumes:

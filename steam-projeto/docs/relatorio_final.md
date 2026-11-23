@@ -175,13 +175,15 @@ O passo a passo de cada tela está em `docs/guia_do_sistema.md`.
 ![Aba do agente de dados](prints/03_agente.png)
 
 ## 10. Agente de dados com RAG
-**Coleta de textos (tabela 9.1).** Foram coletados 1.329 documentos. A lista completa, com documento, fonte, link, data de acesso e tema, está em `docs/tabela_documentos.csv`.
+**Coleta de textos (tabela 9.1).** A base textual tem 2.331 documentos. A lista completa, com documento, fonte, link, data de acesso e tema, está em `docs/tabela_documentos.csv`.
 
 | Tipo de documento | Qtd. | Fonte | Tema |
 |---|---|---|---|
 | Notícias e patch notes oficiais (80 jogos mais avaliados) | 362 | Steam News API, feed de anúncios oficiais | atualizações e novidades |
 | Descrição de cada jogo | 955 | Steam Store API | o que é o jogo |
 | Achados da análise do grupo | 12 | este projeto | estatística e ML |
+| Ficha com os números de cada jogo (preço, jogadores, avaliação, donos, nota...) | 961 | base estruturada do projeto (SteamSpy + Steam Store) | dados do jogo |
+| Rankings da base (mais jogados, mais caros, mais bem avaliados, por gênero...) | 41 | base estruturada do projeto | rankings |
 
 Exemplos para o corpo do relatório:
 
@@ -195,7 +197,7 @@ Exemplos para o corpo do relatório:
 1. Extração do JSON das APIs.
 2. Limpeza de HTML, BBCode, links e entidades.
 3. Descarte de textos com menos de 30 palavras.
-4. Divisão em chunks de 300 palavras com sobreposição de 50, resultando em 2.724 chunks.
+4. Divisão em chunks de 300 palavras com sobreposição de 50, resultando em 3.726 chunks. As fichas e os rankings foram gerados a partir da base estruturada para que o agente também responda perguntas diretas, como "qual o jogo mais jogado?" ou "quanto custa o Valheim?".
 5. Metadados em cada chunk: título, fonte, link, data, tema e jogo.
 
 **Embeddings e banco vetorial.** Usamos o modelo `paraphrase-multilingual-MiniLM-L12-v2`, que é gratuito, roda localmente e entende português e inglês. Isso importa porque as perguntas são em português e os patch notes em inglês. O título é concatenado ao texto antes de gerar o embedding. Os chunks ficam no PostgreSQL 16 com a extensão **pgvector**, que roda num container Docker (`docker-compose.yml`). Cada chunk é uma linha da tabela `documentos`:

@@ -108,7 +108,8 @@ def achar_jogo(pergunta):
 def _palavras(txt):
     """Palavras com 4+ letras, sem acento e em minúsculas (para comparar pergunta e texto)."""
     txt = unicodedata.normalize("NFKD", txt.lower()).encode("ascii", "ignore").decode()
-    return {w[:6] for w in re.findall(r"[a-z0-9]{4,}", txt)} - _COMUNS   # [:6] junta variações: variavel/variaveis
+    # sem o "s" final e cortado em 6 letras: junta variações (caro/caros, jogado/jogados, variavel/variaveis)
+    return {(w[:-1] if w.endswith("s") else w)[:6] for w in re.findall(r"[a-z0-9]{4,}", txt)} - _COMUNS
 
 
 _COMUNS = {"qual", "quai", "mais", "jogo", "jogos", "sera", "como", "para", "pelo", "pela", "este", "esta", "isso", "sobre", "tem"}
@@ -118,32 +119,81 @@ SQL_BUSCA = """
     SELECT titulo, fonte, link, data, tema, jogo, texto,
            embedding <=> %(emb)s AS distancia          -- <=> = distância cosseno (0 = idêntico)
     FROM documentos
-    WHERE %(jogo)s::text IS NULL OR jogo = %(jogo)s     -- filtro opcional por jogo
+    WHERE (%(jogo)s::text IS NULL AND tema <> 'Ficha do jogo')   -- pergunta geral: sem as 961 fichas
+       OR jogo = %(jogo)s                                       -- pergunta sobre um jogo: só os textos dele
     ORDER BY distancia
     LIMIT %(n)s
 """
 
 
+# pergunta de ranking ("o mais jogado", "o melhor", "o mais caro"...): prioriza os textos "Ranking: ..."
+_RANKING = re.compile(r" (mais|menos|melhor|melhores|pior|piores|maior|maiores|menor|top|barat\w*|car[oa]s?|popular\w*|"
+                      r"ranking|recentes?|antigos?|promoc\w*|desconto\w*) ")
+# gêneros como aparecem nos títulos dos rankings ("Ranking: melhores jogos de Estratégia") e como a pessoa escreve
+_GENEROS = {"acao": "acao", "action": "acao", "tiro": "acao", "aventura": "aventura", "adventure": "aventura", "indie": "indie",
+            "rpg": "rpg", "simulacao": "simulacao", "simulador": "simulacao", "simulation": "simulacao", "estrategia": "estrategia",
+            "strategy": "estrategia", "free to play": "gratuitos", "casual": "casual", "mmo": "mmo", "multijogador massivo": "mmo",
+            "esporte": "esportes", "esportes": "esportes", "futebol": "esportes", "sports": "esportes", "corrida": "corrida",
+            "racing": "corrida", "acesso antecipado": "acesso antecipado", "early access": "acesso antecipado"}
+_RANK_GENERO = re.compile(r"ranking: (?:jogos de (.+?) mais jogados|melhores jogos de (.+))$", re.I)
+
+
+def _genero_da_pergunta(pergunta):
+    p = _norm(pergunta)
+    return next((g for chave, g in _GENEROS.items() if f" {chave} " in p), None)
+
+
+def _linha(r):
+    titulo, fonte, link, data, tema, jg, texto, dist = r
+    return {"texto": texto, "titulo": titulo, "fonte": fonte, "link": link, "data": data, "tema": tema,
+            "jogo": jg, "distancia": round(dist, 3), "score": 0.0}
+
+
 def buscar(pergunta, k=5):
     """Busca híbrida: 1) semântica no pgvector pega 4k candidatos;
-    2) reordena somando um bônus para palavras da pergunta que aparecem no título/texto."""
+    2) reordena somando bônus para palavras da pergunta que aparecem no título/texto."""
     preparar()
     emb = _modelo.encode(pergunta)                # numpy array com 384 números
     jogo = achar_jogo(pergunta)                    # pergunta sobre um jogo: busca só nos textos dele
-    linhas = _con.execute(SQL_BUSCA, {"emb": emb, "jogo": jogo, "n": k * 4}).fetchall()
+    cand = [_linha(r) for r in _con.execute(SQL_BUSCA, {"emb": emb, "jogo": jogo, "n": k * 4}).fetchall()]
     qp = _palavras(pergunta)
-    cand = []
-    for titulo, fonte, link, data, tema, jg, texto, dist in linhas:
-        comum = len(qp & _palavras(titulo + " " + texto)) / max(len(qp), 1)
-        cand.append({"texto": texto, "titulo": titulo, "fonte": fonte, "link": link, "data": data, "tema": tema,
-                     "jogo": jg, "distancia": round(dist, 3), "score": round((1 - dist) + 0.3 * comum, 3)})
+    genero = _genero_da_pergunta(pergunta)
+    ranking = not jogo and _RANKING.search(_norm(pergunta)) and not (" genero" in _norm(pergunta) and not genero)
+    if ranking:   # os rankings são poucos (~40): garante que todos concorram, mesmo fora dos 4k vizinhos
+        vistos = {c["titulo"] for c in cand}
+        cand += [_linha(r) for r in _con.execute(
+            "SELECT titulo, fonte, link, data, tema, jogo, texto, embedding <=> %(emb)s FROM documentos "
+            "WHERE tema = 'Ranking da base'", {"emb": emb}).fetchall() if r[0] not in vistos]
+    for c in cand:
+        comum = len(qp & _palavras(c["titulo"] + " " + c["texto"])) / max(len(qp), 1)
+        no_titulo = len(qp & _palavras(c["titulo"])) / max(len(qp), 1)     # o título resume o assunto do texto
+        c["score"] = (1 - c["distancia"]) + 0.3 * comum + 0.2 * no_titulo
+        if c["tema"] == "Ranking da base":
+            m = _RANK_GENERO.search(c["titulo"])
+            g = m and _norm(m.group(1) or m.group(2)).split()[0]
+            if g:                      # ranking de um gênero: só sobe se a pergunta falar desse gênero
+                c["score"] += 0.3 if genero and g == genero.split()[0] else -0.3
+            elif ranking:
+                c["score"] += 0.2
+        c["score"] = round(c["score"], 3)
     # pergunta sobre "última atualização / novidades": dá um bônus para as notícias mais novas
     if jogo and re.search(r"ultim|recent|novidad|atualiz|patch|update|mudou", _norm(pergunta)):
-        datas = sorted({c["data"] for c in cand if c["data"]}, reverse=True)
+        noticia = lambda c: c["tema"].startswith("Notícia")      # só notícias (fichas/descrições têm a data da coleta)
+        datas = sorted({c["data"] for c in cand if c["data"] and noticia(c)}, reverse=True)
         for c in cand:
-            if c["data"] in datas:
+            if noticia(c) and c["data"] in datas:
                 c["score"] = round(c["score"] + 0.2 * (1 - datas.index(c["data"]) / max(len(datas), 1)), 3)
-    return sorted(cand, key=lambda c: c["score"], reverse=True)[:k]
+    top = sorted(cand, key=lambda c: c["score"], reverse=True)[:k]
+    # pergunta sobre um jogo: a ficha com os números dele (preço, jogadores, nota...) sempre vai junto
+    if jogo and not any(c["tema"] == "Ficha do jogo" for c in top):
+        ficha = [c for c in cand if c["tema"] == "Ficha do jogo"]
+        if not ficha:
+            r = _con.execute("SELECT titulo, fonte, link, data, tema, jogo, texto, embedding <=> %(emb)s FROM documentos "
+                             "WHERE tema = 'Ficha do jogo' AND jogo = %(jogo)s", {"emb": emb, "jogo": jogo}).fetchone()
+            ficha = [_linha(r)] if r else []
+        if ficha:
+            top = top[:k - 1] + ficha[:1]
+    return top
 
 
 def montar_prompt(pergunta, trechos):

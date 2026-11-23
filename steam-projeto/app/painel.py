@@ -15,6 +15,24 @@ import plotly.express as px
 import streamlit as st
 
 st.set_page_config(page_title="Painel Steam", page_icon="🎮", layout="wide")
+
+# O Streamlit marca a página como inglês (<html lang="en">), e o Chrome/Edge oferecem "traduzir".
+# A tradução automática mexe no HTML por baixo do React e quebra o painel
+# ("NotFoundError: removeChild"). Aqui avisamos o navegador que a página já é pt-BR e não deve ser traduzida.
+_SEM_TRADUCAO = """<script>
+const d = window.parent.document;
+d.documentElement.lang = "pt-BR";
+d.documentElement.setAttribute("translate", "no");
+d.documentElement.classList.add("notranslate");
+if (!d.querySelector('meta[name="google"]')) {
+  const m = d.createElement("meta"); m.name = "google"; m.content = "notranslate"; d.head.appendChild(m);
+}
+</script>"""
+try:
+    st.html(_SEM_TRADUCAO, unsafe_allow_javascript=True)      # Streamlit novo
+except TypeError:
+    import streamlit.components.v1 as components                # Streamlit mais antigo
+    components.html(_SEM_TRADUCAO, height=0)
 ORDEM_PRECO = ["Grátis", "Até R$30", "R$30-80", "R$80-150", "Acima de R$150"]
 
 

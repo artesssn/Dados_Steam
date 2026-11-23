@@ -35,7 +35,6 @@ source .venv/bin/activate
 python -m pip install -r requirements.txt
 cp .env.example .env
 docker compose up -d        # banco vetorial: PostgreSQL + pgvector, já carregado com banco_pronto/
-ollama pull qwen2.5:7b      # LLM local que escreve as respostas
 ```
 
 O painel analítico funciona sem o banco. A aba **Agente de dados** precisa do PostgreSQL ligado (`docker compose up -d`).
@@ -163,7 +162,7 @@ Selecione **Agente de dados** na navegação superior.
 3. A resposta aparece abaixo do campo, acompanhada de referências numeradas quando há um modelo de linguagem configurado.
 4. Expanda **Fontes e trechos usados** para conferir os textos que embasaram a resposta.
 
-Sem configurar um LLM, o agente funciona em modo de busca e apresenta os trechos encontrados. Para gerar respostas redigidas, configure um modelo local no `.env` (Ollama com `qwen2.5:7b` ou um arquivo GGUF). O agente consulta somente a base interna do projeto: nenhuma pergunta é enviada para a internet. O banco vetorial (PostgreSQL + pgvector) precisa estar ligado; ele já sobe preenchido com o arquivo de `banco_pronto/` (o `python src/vetorial.py` só é necessário para refazê-lo).
+O agente funciona em modo só busca: a pergunta é vetorizada, o pgvector devolve os 5 trechos mais parecidos e o painel mostra cada um com fonte, data, similaridade e link. Opcionalmente, um LLM local configurado no `.env` (Ollama ou arquivo GGUF) pode redigir uma resposta a partir desses trechos. O agente consulta somente a base interna do projeto: nenhuma pergunta é enviada para a internet. O banco vetorial (PostgreSQL + pgvector) precisa estar ligado; ele já sobe preenchido com o arquivo de `banco_pronto/` (o `python src/vetorial.py` só é necessário para refazê-lo).
 
 ## 8. Etapas de dados e arquivos importantes
 

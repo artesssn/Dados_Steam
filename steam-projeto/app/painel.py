@@ -254,15 +254,22 @@ with aba_agente:
             jogo = agente.achar_jogo(pergunta)
             if jogo:
                 st.caption(f"Jogo identificado na pergunta: **{jogo}** (a busca ficou só nos textos dele).")
-            if agente.tem_llm():
+            if agente.tem_llm():   # opcional: com OLLAMA=1 no .env, um LLM local redige a resposta
                 with st.spinner("O modelo local está escrevendo a resposta (no notebook pode levar até 1 minuto)..."):
-                    resp = st.write_stream(agente.chamar_llm_stream(agente.montar_prompt(pergunta, trechos)))
-            else:
-                resp = agente.modo_busca(trechos)
-                st.markdown(sem_cifrao(resp).replace("\n", "  \n"))
-            with st.expander("Fontes e trechos usados"):
-                for fo, t in zip(agente.fontes_de(trechos), trechos):
-                    st.markdown(sem_cifrao(f"**{fo}**  \n{t['texto'][:500]}..."))
+                    st.write_stream(agente.chamar_llm_stream(agente.montar_prompt(pergunta, trechos)))
+                with st.expander("Fontes e trechos usados"):
+                    for fo, t in zip(agente.fontes_de(trechos), trechos):
+                        st.markdown(sem_cifrao(f"**{fo}**  \n{t['texto'][:500]}..."))
+            else:                  # padrão do projeto: só busca no pgvector, mostrando os trechos encontrados
+                st.markdown(f"**{len(trechos)} trechos mais parecidos com a pergunta** (busca por similaridade no pgvector):")
+                for i, t in enumerate(trechos, 1):
+                    with st.container(border=True):
+                        st.markdown(sem_cifrao(f"**[{i}] {t['titulo']}**"))
+                        st.caption(sem_cifrao(f"{t['fonte']} · {t['data'] or 'sem data'} · "
+                                              f"similaridade {1 - t['distancia']:.2f}"))
+                        st.markdown(sem_cifrao(t["texto"][:600] + ("..." if len(t["texto"]) > 600 else "")))
+                        if t["link"]:
+                            st.markdown(f"[Abrir a fonte]({t['link']})")
         except Exception as e:   # mostra o que falta (banco, Ollama...) em vez do traceback
             carregar_agente.clear()
             erro_do_agente(e)

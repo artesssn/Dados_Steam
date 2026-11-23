@@ -218,9 +218,10 @@ def tem_llm():
 
 
 def modo_busca(trechos):
-    return ("(Modo só busca: configure OLLAMA=1 ou LLAMA_GGUF no .env "
-            "para o agente redigir a resposta.) Trechos mais relevantes:\n" +
-            "\n".join(f"[{i}] {t['titulo']}: {t['texto'][:250]}..." for i, t in enumerate(trechos, 1)))
+    """Modo só busca (o padrão do projeto): devolve os trechos encontrados no pgvector, sem LLM."""
+    return "Trechos mais parecidos com a pergunta, encontrados no banco vetorial:\n\n" + "\n\n".join(
+        f"[{i}] {t['titulo']} ({t['fonte']}, {t['data']}) - similaridade {1 - t['distancia']:.2f}\n{t['texto'][:400]}..."
+        for i, t in enumerate(trechos, 1))
 
 
 def fontes_de(trechos):

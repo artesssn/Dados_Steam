@@ -10,9 +10,8 @@ python -m venv .venv
 pip install -r requirements.txt
 copy .env.example .env          # macOS/Linux: cp .env.example .env
 docker compose up -d            # PostgreSQL + pgvector JÁ COM OS DADOS (banco_pronto/). Deixe o Docker Desktop aberto
-ollama pull qwen2.5:7b          # modelo que escreve as respostas (notebook fraco: qwen2.5:3b)
 
-# Atalho: com isso o agente já funciona. Pule para o passo 3 (streamlit).
+# Atalho: com isso o agente já funciona (modo só busca). Pule para o passo 3 (streamlit).
 # O modelo de embeddings vem pronto em modelos/minilm (as partes são juntadas sozinhas na 1ª pergunta).
 
 # 2. pipeline, nesta ordem (sempre a partir desta pasta)
@@ -27,15 +26,17 @@ python src/agente_rag.py --teste    # as 5 perguntas da apresentação
 # 3. painel + agente no navegador
 streamlit run app/painel.py
 ```
-O agente roda **somente dentro do projeto**: os textos ficam no nosso PostgreSQL e o LLM roda no próprio computador, sem API externa. Para ele redigir as respostas:
-- **Ollama (recomendado):** instale em https://ollama.com, rode `ollama pull qwen2.5:7b` e tire o `#` de `OLLAMA=1` no `.env`.
+O agente roda **somente dentro do projeto**, sem API externa. Por padrão ele funciona em **modo só busca**: a pergunta vira vetor, o pgvector acha os 5 trechos mais parecidos e o painel mostra cada um com fonte, data, similaridade e link. Não precisa instalar o Ollama.
+
+Opcional, se quiserem que um LLM local redija uma resposta a partir dos trechos:
+- **Ollama:** instale em https://ollama.com, rode `ollama pull qwen2.5:7b` e tire o `#` de `OLLAMA=1` no `.env`.
 - **Arquivo GGUF (Linux/macOS):** `pip install llama-cpp-python` e `LLAMA_GGUF=caminho/do/modelo.gguf` no `.env`.
 
 **Sem Docker?** Instale o PostgreSQL 16 e a extensão pgvector (https://github.com/pgvector/pgvector#installation), crie o banco `steam` e ajuste `DATABASE_URL` no `.env`.
 
 Para ver os dados no banco: `docker exec -it steam-pgvector psql -U steam -c "SELECT titulo, jogo FROM documentos LIMIT 5;"`
 
-Sem LLM, o agente funciona em modo busca (mostra os trechos encontrados). Teste com `python src/agente_rag.py --teste`.
+Teste a busca com `python src/agente_rag.py --teste` (as 5 perguntas da apresentação).
 
 ## Estrutura
 | Pasta / arquivo | Etapa | Conteúdo |

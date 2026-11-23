@@ -254,14 +254,7 @@ with aba_agente:
             jogo = agente.achar_jogo(pergunta)
             if jogo:
                 st.caption(f"Jogo identificado na pergunta: **{jogo}** (a busca ficou só nos textos dele).")
-            if agente.tem_llm():   # opcional: com OLLAMA=1 no .env, um LLM local redige a resposta
-                with st.spinner("O modelo local está escrevendo a resposta (no notebook pode levar até 1 minuto)..."):
-                    st.write_stream(agente.chamar_llm_stream(agente.montar_prompt(pergunta, trechos)))
-                with st.expander("Fontes e trechos usados"):
-                    for fo, t in zip(agente.fontes_de(trechos), trechos):
-                        st.markdown(sem_cifrao(f"**{fo}**  \n{t['texto'][:500]}..."))
-            else:                  # padrão do projeto: só busca no pgvector, mostrando os trechos encontrados
-                st.markdown(f"**{len(trechos)} trechos mais parecidos com a pergunta** (busca por similaridade no pgvector):")
+            def mostrar_trechos():
                 for i, t in enumerate(trechos, 1):
                     with st.container(border=True):
                         st.markdown(sem_cifrao(f"**[{i}] {t['titulo']}**"))
@@ -270,6 +263,21 @@ with aba_agente:
                         st.markdown(sem_cifrao(t["texto"][:600] + ("..." if len(t["texto"]) > 600 else "")))
                         if t["link"]:
                             st.markdown(f"[Abrir a fonte]({t['link']})")
+
+            escreveu = False
+            if agente.tem_llm():   # OLLAMA=1 no .env: o LLM local (Qwen 2.5) redige a resposta em português
+                try:
+                    with st.spinner("O modelo local está escrevendo a resposta (no notebook pode levar até 1 minuto)..."):
+                        st.write_stream(agente.chamar_llm_stream(agente.montar_prompt(pergunta, trechos)))
+                    escreveu = True
+                except RuntimeError as e:   # Ollama fechado ou sem o modelo: avisa e mostra só a busca
+                    st.warning(f"{e} Enquanto isso, veja os trechos que a busca encontrou.")
+            if escreveu:
+                with st.expander("Fontes e trechos usados"):
+                    mostrar_trechos()
+            else:                  # sem LLM: só a busca no pgvector, mostrando os trechos encontrados
+                st.markdown(f"**{len(trechos)} trechos mais parecidos com a pergunta** (busca por similaridade no pgvector):")
+                mostrar_trechos()
         except Exception as e:   # mostra o que falta (banco, Ollama...) em vez do traceback
             carregar_agente.clear()
             erro_do_agente(e)

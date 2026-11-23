@@ -11,7 +11,9 @@ pip install -r requirements.txt
 copy .env.example .env          # macOS/Linux: cp .env.example .env
 docker compose up -d            # PostgreSQL + pgvector JÁ COM OS DADOS (banco_pronto/). Deixe o Docker Desktop aberto
 
-# Atalho: com isso o agente já funciona (modo só busca). Pule para o passo 3 (streamlit).
+ollama pull qwen2.5:7b          # LLM local que escreve as respostas em português (notebook fraco: qwen2.5:3b)
+
+# Atalho: com isso o agente já funciona. Pule para o passo 3 (streamlit).
 # O modelo de embeddings vem pronto em modelos/minilm (as partes são juntadas sozinhas na 1ª pergunta).
 
 # 2. pipeline, nesta ordem (sempre a partir desta pasta)
@@ -26,10 +28,9 @@ python src/agente_rag.py --teste    # as 5 perguntas da apresentação
 # 3. painel + agente no navegador
 streamlit run app/painel.py
 ```
-O agente roda **somente dentro do projeto**, sem API externa. Por padrão ele funciona em **modo só busca**: a pergunta vira vetor, o pgvector acha os 5 trechos mais parecidos e o painel mostra cada um com fonte, data, similaridade e link. Não precisa instalar o Ollama.
+O agente roda **somente dentro do projeto**, sem API externa: a pergunta vira vetor, o pgvector acha os 5 trechos mais parecidos e um LLM local (Qwen 2.5 no Ollama) escreve a resposta em português, citando as fontes. Se o Ollama estiver fechado, o painel avisa e mostra só os trechos encontrados (modo só busca).
 
-Opcional, se quiserem que um LLM local redija uma resposta a partir dos trechos:
-- **Ollama:** instale em https://ollama.com, rode `ollama pull qwen2.5:7b` e tire o `#` de `OLLAMA=1` no `.env`.
+- **Ollama (usado pelo grupo):** instale em https://ollama.com e rode `ollama pull qwen2.5:7b`. O `.env.example` já vem com `OLLAMA=1`.
 - **Arquivo GGUF (Linux/macOS):** `pip install llama-cpp-python` e `LLAMA_GGUF=caminho/do/modelo.gguf` no `.env`.
 
 **Sem Docker?** Instale o PostgreSQL 16 e a extensão pgvector (https://github.com/pgvector/pgvector#installation), crie o banco `steam` e ajuste `DATABASE_URL` no `.env`.

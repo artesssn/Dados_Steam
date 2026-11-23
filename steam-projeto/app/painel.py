@@ -220,16 +220,49 @@ with aba_painel:
         st.caption("Estas conclusões descrevem a base completa e não mudam com os filtros.")
 
 # ======================================================================= AGENTE
+@st.cache_resource(show_spinner="Carregando o agente (modelo de embeddings + banco). Só demora na primeira vez...")
+def carregar_agente():
+    """Carrega o agente UMA vez por sessão do Streamlit (antes ele recarregava a cada pergunta)."""
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+    import agente_rag
+    agente_rag.preparar()
+    return agente_rag
+
+
+def erro_do_agente(e):
+    msg = str(e)
+    if "Connection refused" in msg or "connection failed" in msg or "could not connect" in msg.lower():
+        st.error("Não consegui conectar no banco PostgreSQL. Abra o Docker Desktop e rode `docker compose up -d` "
+                 "na pasta steam-projeto.")
+    elif "documentos" in msg and "does not exist" in msg:
+        st.error("O banco está no ar, mas ainda não tem os textos. Rode `python src/vetorial.py` uma vez.")
+    else:
+        st.error(f"O agente deu erro: {msg}")
+
+
 with aba_agente:
     st.write("Pergunte sobre os jogos, patch notes ou sobre a nossa análise. O agente busca nos textos "
              "guardados no banco do projeto (PostgreSQL + pgvector) e cita as fontes.")
-    pergunta = st.text_input("Sua pergunta", placeholder="Ex.: O que mudou na última atualização do Valheim?")
-    if pergunta:
-        sys.path.insert(0, "src")
-        from agente_rag import responder
-        with st.spinner("Buscando..."):
-            resp, fontes, trechos = responder(pergunta)
-        st.markdown(sem_cifrao(resp).replace("\n", "  \n"))   # mantém R$ e as quebras de linha
-        with st.expander("Fontes e trechos usados"):
-            for fo, t in zip(fontes, trechos):
-                st.markdown(sem_cifrao(f"**{fo}**  \n{t['texto'][:500]}..."))
+    with st.form("form_agente"):
+        pergunta = st.text_input("Sua pergunta", placeholder="Ex.: O que mudou na última atualização do Valheim?")
+        enviar = st.form_submit_button("Perguntar")
+    if enviar and pergunta.strip():
+        try:
+            agente = carregar_agente()
+            with st.spinner("Buscando os trechos no pgvector..."):
+                trechos = agente.buscar(pergunta)
+            jogo = agente.achar_jogo(pergunta)
+            if jogo:
+                st.caption(f"Jogo identificado na pergunta: **{jogo}** (a busca ficou só nos textos dele).")
+            if agente.tem_llm():
+                with st.spinner("O modelo local está escrevendo a resposta (no notebook pode levar até 1 minuto)..."):
+                    resp = st.write_stream(agente.chamar_llm_stream(agente.montar_prompt(pergunta, trechos)))
+            else:
+                resp = agente.modo_busca(trechos)
+                st.markdown(sem_cifrao(resp).replace("\n", "  \n"))
+            with st.expander("Fontes e trechos usados"):
+                for fo, t in zip(agente.fontes_de(trechos), trechos):
+                    st.markdown(sem_cifrao(f"**{fo}**  \n{t['texto'][:500]}..."))
+        except Exception as e:   # mostra o que falta (banco, Ollama...) em vez do traceback
+            carregar_agente.clear()
+            erro_do_agente(e)

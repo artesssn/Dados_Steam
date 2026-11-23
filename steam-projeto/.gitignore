@@ -1,0 +1,8 @@
+.env
+__pycache__/
+.venv/
+pgdata/
+*.pyc
+
+# modelo de embeddings já juntado (as partes .parteNN é que vão para o GitHub)
+modelos/minilm/model.safetensors

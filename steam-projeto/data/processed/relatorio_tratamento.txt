@@ -1,0 +1,13 @@
+Jogos com detalhes na Store API: 987 linhas
+Depois de remover duplicados: 978 linhas
+Só tipo 'game': 978 linhas
+Com data de lançamento válida: 966 linhas
+Com pelo menos 50 avaliações: 961 linhas
+BASE FINAL: 961 linhas
+
+Valores nulos por coluna (os que restaram):
+preco_brl              87
+preco_original_brl     87
+metacritic            417
+recomendacoes          68
+faixa_preco            87
